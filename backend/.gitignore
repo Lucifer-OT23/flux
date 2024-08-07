@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 # Customs
-src/utils/config.js
+*.env

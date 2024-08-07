@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
-const { getToken } = require("../utils/helpers");
+const { getToken, verifyToken } = require("../utils/helpers");
 
 const mongoose = require("mongoose");
 const { body, validationResult } = require("express-validator");
@@ -95,5 +94,25 @@ router.post(
         }
     }
 );
+
+router.get("/me", verifyToken, async (req, res) => {
+    try {
+        const userId = req.user._id;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        const userToReturn = { ...user.toJSON() };
+        delete userToReturn.password;
+        return res.status(200).json(userToReturn);
+    } catch (error) {
+        console.error("Fetch user error:", error);
+        return res.status(500).json({ error: "Server error" });
+    }
+});
+
+router.post("/logout", (req, res) => {
+    res.cookie("token", "", { expires: new Date(0), httpOnly: true });
+});
 
 module.exports = router;

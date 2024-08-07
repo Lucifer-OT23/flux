@@ -2,13 +2,37 @@ import React, { useContext, useLayoutEffect, useRef, useState } from "react";
 import { Icon } from "@iconify/react";
 import { Howl, Howler } from "howler";
 import { Link } from "react-router-dom";
+import { makeAuthPOSTRequest } from "../utils/serverHelper";
 
 import flux from "../assets/flux-white.png";
 import IconText from "../components/shared/IconText";
 import TextHover from "../components/shared/TextHover";
 import songContext from "../contexts/songContext";
+import CreatePlaylist from "../models/CreatePlaylist";
+import AddToPlaylist from "../models/AddToPlaylist";
+import Search from "../models/Search";
 
 const LoggedIn = ({ children, currActiveScreen }) => {
+    const [createPlaylistOpen, setCreatePlaylistOpen] = useState(false);
+    const [addToPlaylist, setAddToPlaylist] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+
+    const addSongToPlaylist = async (playlistId) => {
+        const songId = currentSong._id;
+
+        const payload = { playlistId, songId };
+
+        const response = await makeAuthPOSTRequest(
+            "/playlist/add/song",
+            payload
+        );
+
+        if (response._id) {
+            setCreatePlaylistOpen(false);
+        }
+        console.log(response);
+    };
+
     const {
         currentSong,
         setCurrentSong,
@@ -71,6 +95,31 @@ const LoggedIn = ({ children, currActiveScreen }) => {
 
     return (
         <div className="h-screen w-screen bg-[#1A1A3B]">
+            {createPlaylistOpen && (
+                <CreatePlaylist
+                    close={() => {
+                        setCreatePlaylistOpen(false);
+                    }}
+                />
+            )}
+
+            {addToPlaylist && (
+                <AddToPlaylist
+                    close={() => {
+                        setAddToPlaylist(false);
+                    }}
+                    addSongToPlaylist={addSongToPlaylist}
+                />
+            )}
+
+            {searchOpen && (
+                <Search
+                    close={() => {
+                        setSearchOpen(false);
+                    }}
+                />
+            )}
+
             <div className={`${currentSong ? "h-9/10" : "h-full"} w-full flex`}>
                 <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-between pb-10 rounded-r-xl transition-all duration-300">
                     <div>
@@ -88,10 +137,12 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                             />
                             <IconText
                                 iconName="ic:outline-travel-explore"
-                                displayText="Explore"
+                                displayText="Search"
                                 active={currActiveScreen === "search"}
-                                targetLink="/search"
                                 className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                                onClick={() => {
+                                    setSearchOpen(true);
+                                }}
                             />
                             <IconText
                                 iconName="solar:music-library-2-outline"
@@ -114,6 +165,9 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                                 iconName="tabler:playlist-add"
                                 displayText="Create Playlist"
                                 className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                                onClick={() => {
+                                    setCreatePlaylistOpen(true);
+                                }}
                             />
 
                             <IconText
@@ -165,7 +219,7 @@ const LoggedIn = ({ children, currActiveScreen }) => {
 
             {currentSong && (
                 <div className="player w-full h-1/10 bg-opacity-30 text-white flex items-center px-2 transition-all duration-300">
-                    <div className="w-1/4 flex items-center">
+                    <div className="w-1/4 flex items-center pl-2">
                         <img
                             src={currentSong.thumbnail}
                             alt="current song thumbnail"
@@ -223,7 +277,22 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                         </div>
                     </div>
 
-                    <div className="1/4 flex justify-end"></div>
+                    <div className="w-1/4 flex justify-end items-center pr-2 space-x-2">
+                        <Icon
+                            icon="tabler:music-plus"
+                            fontSize={30}
+                            className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
+                            onClick={() => {
+                                setAddToPlaylist(true);
+                            }}
+                        />
+
+                        <Icon
+                            icon="solar:heart-outline"
+                            fontSize={30}
+                            className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
+                        />
+                    </div>
                 </div>
             )}
         </div>

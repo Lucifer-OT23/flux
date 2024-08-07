@@ -4,11 +4,12 @@ import { useCookies } from "react-cookie";
 
 import Login from "./routes/Login";
 import SignUp from "./routes/SignUp";
-import Home from "./routes/Home";
+
 import HomeIn from "./routes/HomeIn";
-import Search from "./routes/Search";
 import UploadSong from "./routes/UploadSong";
 import MySongs from "./routes/MySongs";
+import Library from "./routes/Library";
+import PlaylistView from "./routes/PlaylistView";
 import songContext from "./contexts/songContext";
 
 function App() {
@@ -40,14 +41,17 @@ function App() {
                                 element={<UploadSong />}
                             />
                             <Route path="/mysongs" element={<MySongs />} />
-                            <Route path="/search" element={<Search />} />
+                            <Route path="/library" element={<Library />} />
+                            <Route
+                                path="/playlist/:playlistId"
+                                element={<PlaylistView />}
+                            />
                             <Route path="*" element={<Navigate to="/home" />} />
                         </Routes>
                     </songContext.Provider>
                 ) : (
                     //logged Out Routes
                     <Routes>
-                        <Route path="/home" element={<Home />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
                         <Route path="*" element={<Navigate to="/login" />} />

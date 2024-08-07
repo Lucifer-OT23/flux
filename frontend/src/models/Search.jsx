@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Icon } from "@iconify/react/dist/iconify.js";
+import { Icon } from "@iconify/react";
 import { makeAuthGETRequest } from "../utils/serverHelper";
 
-import LoggedIn from "../containers/LoggedIn";
 import SongCard from "../components/shared/SongCard";
 
-const Search = () => {
+const Search = ({ close }) => {
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [searchText, setSearchText] = useState("");
     const [songData, setSongData] = useState([]);
@@ -31,10 +30,16 @@ const Search = () => {
     };
 
     return (
-        <LoggedIn currActiveScreen="search">
-            <div className="w-full py-6">
+        <div
+            className="absolute inset-0 bg-[#1A1A3B] bg-opacity-75 flex justify-center items-center z-50"
+            onClick={close}
+        >
+            <div
+                className="w-full max-w-2xl py-6 px-4 bg-[#2D2D5E] bg-opacity-95 rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+            >
                 <div
-                    className={`w-full sm:w-1/2 lg:w-1/3 p-3 flex text-sm rounded-full bg-[#2D2D5E] px-5 items-center text-white space-x-3 ${
+                    className={`flex items-center text-white rounded-full p-3 space-x-3 ${
                         isInputFocused ? "border border-[#29B6F6]" : ""
                     } transition-all duration-300`}
                 >
@@ -42,7 +47,7 @@ const Search = () => {
                     <input
                         type="text"
                         placeholder="What do you want to listen to?"
-                        className="w-full bg-[#2D2D5E] focus:outline-none"
+                        className="flex-grow bg-transparent focus:outline-none"
                         onFocus={() => setIsInputFocused(true)}
                         onBlur={() => setIsInputFocused(false)}
                         value={searchText}
@@ -64,14 +69,15 @@ const Search = () => {
                 </div>
 
                 {isLoading ? (
-                    <div className="pt-10 text-white pl-6">Loading...</div>
+                    <div className="pt-10 pl-5 text-white">Loading...</div>
                 ) : error ? (
-                    <div className="pt-10 text-red-500">{error}</div>
+                    <div className="pt-10 pl-5 text-red-500">{error}</div>
                 ) : songData.length > 0 ? (
-                    <div className="pt-10 py-3 pl-6">
+                    <div className="pt-10 pl-5 ">
                         <div className="text-white">
                             Showing search results for{" "}
-                            <span className="font-bold">{searchText}</span>...
+                            <span className="font-bold">{searchText}</span>
+                            ...
                         </div>
                         <div className="mt-3 space-y-4">
                             {songData.map((item) => (
@@ -85,12 +91,10 @@ const Search = () => {
                         </div>
                     </div>
                 ) : (
-                    <div className="pt-10 pl-6 text-white">
-                        Try something new...
-                    </div>
+                    <div className="p-10 text-white">Try something new...</div>
                 )}
             </div>
-        </LoggedIn>
+        </div>
     );
 };
 

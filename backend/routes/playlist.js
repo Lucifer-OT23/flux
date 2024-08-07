@@ -52,9 +52,13 @@ router.get(
         }
 
         try {
-            const playlist = await Playlist.findById(playlistId).populate(
-                "songs owner collaborators"
-            );
+            const playlist = await Playlist.findById(playlistId).populate({
+                path: "songs",
+                populate: {
+                    path: "artist",
+                },
+            });
+
             if (!playlist) {
                 return res.status(404).json({ error: "Playlist not found" });
             }

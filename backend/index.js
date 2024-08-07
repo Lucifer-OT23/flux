@@ -7,7 +7,6 @@ const JwtStrategy = require("passport-jwt").Strategy,
 const passport = require("passport");
 
 const User = require("./models/User");
-const Song = require("./models/Song");
 
 const authRoutes = require("./routes/auth");
 const songRoutes = require("./routes/song");
@@ -59,6 +58,23 @@ app.use(passport.initialize());
 
 app.get("/", (req, res) => {
     res.send("Hello World");
+});
+
+app.get(
+    "/auth/me",
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        const user = req.user;
+        if (user) {
+            res.json(user);
+        } else {
+            res.status(401).json({ message: "Unauthorized" });
+        }
+    }
+);
+
+app.post("/auth/logout", (req, res) => {
+    res.status(200).json({ message: "Logged out successfully" });
 });
 
 app.use("/auth", authRoutes);
