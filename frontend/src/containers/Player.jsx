@@ -1,20 +1,22 @@
 import { useEffect, useState, useContext } from "react";
 import { Howl } from "howler";
-import { makeAuthGETRequest } from "../utils/serverHelper";
+import {
+    makeAuthDELETERequest,
+    makeAuthGETRequest,
+    makeAuthPOSTRequest,
+} from "../utils/serverHelper";
 import { Icon } from "@iconify/react/dist/iconify.js";
 
 import songContext from "../contexts/songContext";
 
-const Player = () => {
+const Player = ({ setAddToPlaylist }) => {
     const [user, setUser] = useState("");
     const [songList, setSongList] = useState([]);
-    const [createPlaylistOpen, setCreatePlaylistOpen] = useState(false);
-    const [addToPlaylist, setAddToPlaylist] = useState(false);
-    const [searchOpen, setSearchOpen] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [isShuffle, setIsShuffle] = useState(false);
     const [isRepeat, setIsRepeat] = useState(false);
+    const [isLiked, setIsLiked] = useState(false);
 
     const {
         currentSong,
@@ -51,13 +53,30 @@ const Player = () => {
         fetchSongs();
     }, []);
 
+    useEffect(() => {
+        const checkIfLiked = async () => {
+            if (currentSong) {
+                try {
+                    const response = await makeAuthGETRequest(
+                        `/song/liked/${currentSong._id}`
+                    );
+                    setIsLiked(response.liked);
+                } catch (error) {
+                    console.error("Failed to check if song is liked:", error);
+                }
+            }
+        };
+
+        checkIfLiked();
+    }, [currentSong]);
+
     const changeSound = (songSrc) => {
         if (soundPlayed) {
             soundPlayed.stop();
             soundPlayed.unload();
         }
 
-        setDuration(0); // Reset duration when changing song
+        setDuration(0);
 
         const sound = new Howl({
             src: [songSrc],
@@ -179,11 +198,38 @@ const Player = () => {
     };
 
     const handleShuffle = () => {
-        setIsShuffle(!isShuffle);
+        setIsShuffle((prevShuffle) => {
+            if (!prevShuffle) {
+                setIsRepeat(false);
+            }
+            return !prevShuffle;
+        });
     };
 
     const handleRepeat = () => {
-        setIsRepeat(!isRepeat);
+        setIsRepeat((prevRepeat) => {
+            if (isShuffle) {
+                return false;
+            }
+            return !prevRepeat;
+        });
+    };
+
+    const handleLike = async () => {
+        try {
+            const endpoint = `/song/${isLiked ? "unlike" : "like"}/${
+                currentSong._id
+            }`;
+            const response = isLiked
+                ? await makeAuthDELETERequest(endpoint)
+                : await makeAuthPOSTRequest(endpoint);
+
+            if (response.message) {
+                setIsLiked(!isLiked);
+            }
+        } catch (error) {
+            console.error("Failed to like/unlike song:", error);
+        }
     };
 
     return (
@@ -206,76 +252,115 @@ const Player = () => {
                 </div>
             </div>
 
-            <div className="w-1/2 h-full flex flex-col justify-center items-center">
-                <div className="flex w-1/3 justify-between items-center">
-                    <Icon
-                        icon="tabler:arrows-shuffle"
-                        fontSize={30}
-                        className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
-                        onClick={handleShuffle}
-                    />
-                    <Icon
-                        icon="solar:skip-previous-outline"
-                        fontSize={30}
-                        className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
+            <div className="w-2/4 flex flex-col items-center justify-center">
+                <div className="flex items-center">
+                    <button
                         onClick={handlePrevious}
-                    />
-                    <Icon
-                        icon={
-                            isPaused
-                                ? "solar:play-circle-outline"
-                                : "solar:pause-circle-outline"
-                        }
-                        fontSize={50}
-                        className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
+                        className="p-2 transition-all duration-300"
+                    >
+                        <Icon
+                            icon="tabler:player-track-prev"
+                            width="24"
+                            height="24"
+                        />
+                    </button>
+                    <button
                         onClick={togglePlayPause}
-                        title={isPaused ? "Play" : "Pause"}
-                    />
-                    <Icon
-                        icon="solar:skip-next-outline"
-                        fontSize={30}
-                        className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
+                        className="p-2 mx-2 transition-all duration-300"
+                    >
+                        <Icon
+                            icon={`${
+                                isPaused
+                                    ? "tabler:player-play"
+                                    : "tabler:player-pause"
+                            }`}
+                            width="30"
+                            height="30"
+                        />
+                    </button>
+                    <button
                         onClick={handleNext}
-                    />
-                    <Icon
-                        icon="tabler:repeat"
-                        fontSize={30}
-                        className={`hover:cursor-pointer ${
-                            isRepeat ? "text-white" : "text-[#B0B0C0]"
-                        } `}
-                        onClick={handleRepeat}
-                    />
+                        className="p-2 transition-all duration-300"
+                    >
+                        <Icon
+                            icon="tabler:player-track-next"
+                            width="24"
+                            height="24"
+                        />
+                    </button>
                 </div>
-                <div className="flex w-full justify-between items-center mt-2 text-sm">
-                    <span>{formatTime(currentTime)}</span>
-
-                    <div className="w-full mx-4 bg-[#B0B0C0] rounded-full h-1 relative">
-                        <div
-                            className="bg-[#29B6F6] h-1 rounded-full"
-                            style={{
-                                width: `${(currentTime / duration) * 100}%`,
-                            }}
-                        ></div>
+                <div className="w-full flex items-center px-2 mt-2">
+                    <div className="text-xs text-[#B0B0C0] w-1/5 text-right font-medium">
+                        {formatTime(currentTime)}
                     </div>
-
-                    <span>{formatTime(duration)}</span>
+                    <input
+                        type="range"
+                        min="0"
+                        max={duration}
+                        step="1"
+                        value={currentTime}
+                        onChange={(e) => {
+                            if (soundPlayed) {
+                                soundPlayed.seek(e.target.value);
+                                setCurrentTime(e.target.value);
+                            }
+                        }}
+                        className="w-3/5 mx-2 thin-range-input"
+                    />
+                    <div className="text-xs text-[#B0B0C0] w-1/5 font-medium">
+                        {formatTime(duration)}
+                    </div>
                 </div>
             </div>
 
-            <div className="w-1/4 flex justify-end items-center pr-2 space-x-2">
-                <Icon
-                    icon="tabler:music-plus"
-                    fontSize={30}
-                    className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
-                    onClick={() => {
-                        setAddToPlaylist(true);
-                    }}
-                />
-                <Icon
-                    icon="solar:heart-outline"
-                    fontSize={30}
-                    className="hover:cursor-pointer hover:text-white text-[#B0B0C0]"
-                />
+            <div className="w-1/4 flex justify-end items-center pr-2">
+                <button
+                    onClick={() => setAddToPlaylist(true)}
+                    className="p-2 mx-1 transition-all duration-300"
+                >
+                    <Icon icon="tabler:square-plus" width="24" height="24" />
+                </button>
+                <button
+                    onClick={handleLike}
+                    className="p-2 mx-1 transition-all duration-300"
+                >
+                    <div className="relative w-6 h-6">
+                        <Icon
+                            icon={
+                                isLiked ? "tabler:heart-filled" : "tabler:heart"
+                            }
+                            width="24"
+                            height="24"
+                            className="transition-opacity duration-300"
+                        />
+                    </div>
+                </button>
+                <button
+                    onClick={handleShuffle}
+                    className="p-2 mx-1 transition-all duration-300"
+                >
+                    <Icon
+                        icon={`${
+                            isShuffle
+                                ? "material-symbols:shuffle-on"
+                                : "material-symbols:shuffle"
+                        }`}
+                        width="24"
+                        height="24"
+                    />
+                </button>
+                <button
+                    onClick={handleRepeat}
+                    className="p-2 mx-1 transition-all duration-300"
+                >
+                    <Icon
+                        icon={`${
+                            isRepeat ? "tabler:repeat-once" : "tabler:repeat"
+                        }`}
+                        width="24"
+                        height="24"
+                    />
+                </button>
             </div>
         </div>
     );

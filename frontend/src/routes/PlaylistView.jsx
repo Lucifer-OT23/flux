@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { makeAuthGETRequest } from "../utils/serverHelper";
 
-import LoggedIn from "../containers/LoggedIn";
 import SongCard from "../components/shared/SongCard";
 
 const PlaylistView = () => {
@@ -21,7 +20,7 @@ const PlaylistView = () => {
     }, [playlistId]);
 
     return (
-        <LoggedIn>
+        <div>
             {playlistDetails._id && (
                 <div className="p-8">
                     <div className="text-white text-2xl font-semibold pb-4">
@@ -42,7 +41,7 @@ const PlaylistView = () => {
                     </div>
                 </div>
             )}
-        </LoggedIn>
+        </div>
     );
 };
 

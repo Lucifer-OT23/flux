@@ -1,10 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
-
-const JwtStrategy = require("passport-jwt").Strategy,
-    ExtractJwt = require("passport-jwt").ExtractJwt;
 const passport = require("passport");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+const cors = require("cors");
 
 const User = require("./models/User");
 
@@ -12,7 +12,6 @@ const authRoutes = require("./routes/auth");
 const songRoutes = require("./routes/song");
 const playlistRoutes = require("./routes/playlist");
 
-const cors = require("cors");
 const app = express();
 const port = process.env.PORT;
 
@@ -22,39 +21,38 @@ app.use(express.json());
 mongoose
     .connect(process.env.DB)
     .then(() => {
-        console.log("Connected to Mongo!");
+        console.log("Connected to MongoDB!");
     })
     .catch((err) => {
-        console.log("Error while connecting to Mongo!", err);
+        console.error("Error connecting to MongoDB:", err);
     });
 
-let opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.KEY;
+const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.KEY,
+};
 
 passport.use(
     new JwtStrategy(opts, async (jwt_payload, done) => {
-        console.log("JWT payload:", jwt_payload);
         try {
             const user = await User.findById(jwt_payload.identifier);
             if (user) {
-                console.log("User found:", user);
                 return done(null, user);
             } else {
-                console.log(
-                    "User not found with identifier:",
-                    jwt_payload.identifier
-                );
                 return done(null, false);
             }
         } catch (err) {
-            console.log("Error in finding user:", err);
             return done(err, false);
         }
     })
 );
 
 app.use(passport.initialize());
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send("Something broke!");
+});
 
 app.get("/", (req, res) => {
     res.send("Hello World");
@@ -82,5 +80,5 @@ app.use("/song", songRoutes);
 app.use("/playlist", playlistRoutes);
 
 app.listen(port, () => {
-    console.log("App is running on port " + port);
+    console.log(`App is running on port ${port}`);
 });

@@ -18,7 +18,10 @@ const Song = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "User",
         },
-        featured: { type: Boolean, default: false },
+        featured: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );

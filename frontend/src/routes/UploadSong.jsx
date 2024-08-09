@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { makeAuthPOSTRequest } from "../utils/serverHelper";
-
 import TextInput from "../components/shared/TextInput";
 import CloudinaryUpload from "../components/shared/CloudinaryUpload";
-import LoggedIn from "../containers/LoggedIn";
 
 const UploadSong = () => {
     const [name, setName] = useState("");
@@ -25,56 +23,62 @@ const UploadSong = () => {
     };
 
     return (
-        <LoggedIn>
-            <div className="text-2xl text-white mt-8 font-semibold mb-5">
+        <div className="p-8 max-w-2xl">
+            <div className="text-2xl text-[#FFFFFF] font-bold mb-6">
                 Upload Your Song
             </div>
 
-            <div className="w-2/3 flex space-x-3">
-                <div className="1/3">
-                    <TextInput
-                        label="Name"
-                        placeholder="Name"
-                        value={name}
-                        setValue={setName}
-                    />
-                </div>
+            <div className="space-y-6">
+                <TextInput
+                    label="Name"
+                    placeholder="Enter song name"
+                    value={name}
+                    setValue={setName}
+                />
 
-                <div className="1/3">
-                    <TextInput
-                        label="Thumbnail"
-                        placeholder="Thumbnail"
-                        value={thumbnail}
-                        setValue={setThumbnail}
-                    />
+                <div className="flex flex-wrap gap-4">
+                    <div className="w-full md:w-1/2">
+                        <CloudinaryUpload
+                            setUrl={setThumbnail}
+                            setName={() => {}}
+                            buttonLabel="Upload Thumbnail"
+                        />
+                        {thumbnail && (
+                            <div className="mt-4 bg-[#1A1A3B] border border-[#D0D0E0] rounded-lg p-4">
+                                <img
+                                    src={thumbnail}
+                                    alt="Thumbnail Preview"
+                                    className="w-full h-auto rounded-lg"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="w-full md:w-1/2">
+                        {uploadedSongFileName ? (
+                            <div className="bg-[#1A1A3B] border border-[#D0D0E0] text-[#FFFFFF] rounded-full p-4">
+                                {uploadedSongFileName.substring(0, 20)}...
+                            </div>
+                        ) : (
+                            <CloudinaryUpload
+                                setUrl={setTrackUrl}
+                                setName={setUploadedSongFileName}
+                                buttonLabel="Upload Track"
+                            />
+                        )}
+                    </div>
                 </div>
             </div>
 
-            <div className="w-2/3 flex items-center justify-between">
-                <div className="py-5 w-[33%]">
-                    {uploadedSongFileName ? (
-                        <div className="bg-[#1A1A3B] border border-white text-white rounded-full p-3 w-full">
-                            {uploadedSongFileName.substring(0, 20)}...
-                        </div>
-                    ) : (
-                        <CloudinaryUpload
-                            setUrl={setTrackUrl}
-                            setName={setUploadedSongFileName}
-                        />
-                    )}
-                </div>
-
-                <div
-                    className="bg-[#3C99DC] text-white font-semibold w-40 flex items-center justify-center p-4 px-2 rounded-full cursor-pointer"
-                    onClick={(e) => {
-                        e.preventDefault;
-                        submitSong();
-                    }}
+            <div className="mt-10 flex justify-center">
+                <button
+                    className="bg-[#3C99DC] text-white border  font-semibold py-3 px-6 rounded-full hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                    onClick={submitSong}
                 >
                     Submit Song
-                </div>
+                </button>
             </div>
-        </LoggedIn>
+        </div>
     );
 };
 

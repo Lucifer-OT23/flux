@@ -60,6 +60,26 @@ export const makeAuthGETRequest = async (route) => {
     }
 };
 
+export const makeAuthDELETERequest = async (route) => {
+    try {
+        const token = getToken();
+        const response = await fetch(backendUrl + route, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error making authenticated DELETE request:", error);
+        throw error;
+    }
+};
+
 const getToken = () => {
     const accessToken = document.cookie.replace(
         /(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/,

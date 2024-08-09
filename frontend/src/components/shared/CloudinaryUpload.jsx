@@ -1,10 +1,12 @@
-import { cloudinary_upload_preset } from "../../utils/config";
-import { cloudinary_cloud_name } from "../../utils/config";
+import {
+    cloudinary_upload_preset,
+    cloudinary_cloud_name,
+} from "../../utils/config";
 import { openUploadWidget } from "../../utils/cloudinaryService";
 
-const CloudinaryUploadWidget = ({ setUrl, setName }) => {
+const CloudinaryUpload = ({ setUrl, setName, buttonLabel }) => {
     const uploadWidget = () => {
-        let myUploadWidget = openUploadWidget(
+        const myUploadWidget = openUploadWidget(
             {
                 cloudName: cloudinary_cloud_name,
                 uploadPreset: cloudinary_upload_preset,
@@ -16,7 +18,8 @@ const CloudinaryUploadWidget = ({ setUrl, setName }) => {
                     setName(result.info.original_filename);
                 } else {
                     if (error) {
-                        console.log(error);
+                        console.error("Upload failed: ", error);
+                        alert("Upload failed. Please try again.");
                     }
                 }
             }
@@ -26,12 +29,12 @@ const CloudinaryUploadWidget = ({ setUrl, setName }) => {
 
     return (
         <button
-            className="bg-[#1A1A3B] border border-white text-white font-semibold rounded-full p-4"
+            className="bg-[#1A1A3B] max-w-[70%] border border-[#D0D0E0] text-[#FFFFFF] font-semibold py-2 px-6 rounded-xl hover:bg-[#00B8F6] transition-colors w-full"
             onClick={uploadWidget}
         >
-            Select Track
+            {buttonLabel || "Upload File"}
         </button>
     );
 };
 
-export default CloudinaryUploadWidget;
+export default CloudinaryUpload;

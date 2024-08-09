@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import { makeAuthGETRequest } from "../utils/serverHelper";
 
-import SongCard from "../components/shared/SongCard";
+import SongCardSearch from "../components/shared/SongCardSearch";
 
 const Search = ({ close }) => {
     const [isInputFocused, setIsInputFocused] = useState(false);
@@ -31,11 +31,11 @@ const Search = ({ close }) => {
 
     return (
         <div
-            className="absolute inset-0 bg-[#1A1A3B] bg-opacity-75 flex justify-center items-center z-50"
+            className="absolute inset-0 bg-[#1A1A3B] bg-opacity-75 flex justify-center items-center z-50 overflow-auto"
             onClick={close}
         >
             <div
-                className="w-full max-w-2xl py-6 px-4 bg-[#2D2D5E] bg-opacity-95 rounded-lg"
+                className="w-full max-w-lg max-h-[90vh] py-6 px-4 bg-[#2D2D5E] bg-opacity-95 rounded-lg overflow-auto"
                 onClick={(e) => e.stopPropagation()}
             >
                 <div
@@ -81,7 +81,7 @@ const Search = ({ close }) => {
                         </div>
                         <div className="mt-3 space-y-4">
                             {songData.map((item) => (
-                                <SongCard
+                                <SongCardSearch
                                     key={item._id}
                                     info={item}
                                     playSound={() => {}}

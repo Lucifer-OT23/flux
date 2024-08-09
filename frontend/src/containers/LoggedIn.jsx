@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { makeAuthGETRequest } from "../utils/serverHelper";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { makeAuthGETRequest, makeAuthPOSTRequest } from "../utils/serverHelper";
 
 import flux from "../assets/flux-white.png";
 import IconText from "../components/shared/IconText";
@@ -10,14 +10,17 @@ import AddToPlaylist from "../models/AddToPlaylist";
 import Search from "../models/Search";
 import Player from "./Player";
 
-const LoggedIn = ({ children, currActiveScreen }) => {
+const LoggedIn = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const [user, setUser] = useState("");
-    const [songList, setSongList] = useState([]);
     const [createPlaylistOpen, setCreatePlaylistOpen] = useState(false);
     const [addToPlaylist, setAddToPlaylist] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
 
     const { currentSong } = useContext(songContext);
+    const currActiveScreen = location.pathname.split("/")[1] || "home";
 
     useEffect(() => {
         const getUser = async () => {
@@ -32,18 +35,19 @@ const LoggedIn = ({ children, currActiveScreen }) => {
         };
 
         getUser();
-
-        const fetchSongs = async () => {
-            try {
-                const response = await makeAuthGETRequest("/song/get/recent");
-                setSongList(response.data);
-            } catch (error) {
-                console.error("Failed to fetch songs:", error);
-            }
-        };
-
-        fetchSongs();
     }, []);
+
+    const handleLogout = async () => {
+        try {
+            await makeAuthPOSTRequest("/auth/logout");
+            document.cookie =
+                "token" + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            localStorage.clear();
+            navigate("/login");
+        } catch (error) {
+            console.error("Logout failed:", error);
+        }
+    };
 
     return (
         <div className="h-screen w-screen bg-[#1A1A3B]">
@@ -60,12 +64,12 @@ const LoggedIn = ({ children, currActiveScreen }) => {
             <div
                 className={`${currentSong ? "h-[85%]" : "h-full"} w-full flex`}
             >
-                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-between pb-10 rounded-r-xl transition-all duration-300">
-                    <div className="p-5 flex flex-col items-center">
+                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-r-xl space-y-2 transition-all duration-300">
+                    <div className="p-5 flex flex-col items-center justify-center">
                         <img src={flux} alt="logo" width="140" />
                     </div>
 
-                    <div className="py-5">
+                    <div className="py-5 space-y-2">
                         <IconText
                             iconName="solar:home-angle-outline"
                             displayText="Home"
@@ -81,10 +85,10 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                             onClick={() => setSearchOpen(true)}
                         />
                         <IconText
-                            iconName="solar:music-library-2-outline"
-                            displayText="Library"
-                            active={currActiveScreen === "library"}
-                            targetLink="/library"
+                            iconName="tabler:music-heart"
+                            displayText="Liked Songs"
+                            targetLink="/likedsongs"
+                            active={currActiveScreen === "likedsongs"}
                             className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
                         />
                         <IconText
@@ -94,19 +98,18 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                             active={currActiveScreen === "mysongs"}
                             className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
                         />
-                    </div>
-
-                    <div className="pt-5">
+                        <IconText
+                            iconName="solar:music-library-2-outline"
+                            displayText="Library"
+                            active={currActiveScreen === "library"}
+                            targetLink="/library"
+                            className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                        />
                         <IconText
                             iconName="tabler:playlist-add"
                             displayText="Create Playlist"
                             className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
                             onClick={() => setCreatePlaylistOpen(true)}
-                        />
-                        <IconText
-                            iconName="tabler:music-heart"
-                            displayText="Liked Songs"
-                            className="hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
                         />
                     </div>
                 </div>
@@ -129,20 +132,28 @@ const LoggedIn = ({ children, currActiveScreen }) => {
                                     {user ? user : "User"}
                                 </button>
 
-                                <button className="bg-[#3C99DC] h-2/3 w-1/6 flex items-center justify-center rounded-full font-semibold border border-white hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300">
+                                <button
+                                    className="bg-[#3C99DC] h-2/3 w-1/6 flex items-center justify-center rounded-full font-semibold border border-white hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                                    onClick={handleLogout}
+                                >
                                     Logout
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <div className="content p-7 pt-0 overflow-auto">
-                        {children}
+                    <div className="content p-8 pt-0 overflow-auto">
+                        <Outlet />
                     </div>
                 </div>
             </div>
 
-            {currentSong && <Player />}
+            {currentSong && (
+                <Player
+                    setAddToPlaylist={setAddToPlaylist}
+                    setCreatePlaylistOpen={setCreatePlaylistOpen}
+                />
+            )}
         </div>
     );
 };

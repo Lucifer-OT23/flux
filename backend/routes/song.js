@@ -11,9 +11,6 @@ router.post(
     "/create",
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
-        console.log("Request headers:", req.headers); // Log request headers
-        console.log("Authenticated user:", req.user); // Log authenticated user
-
         const { name, thumbnail, track } = req.body;
         if (!name || !thumbnail || !track) {
             return res
@@ -35,9 +32,6 @@ router.get(
     "/get/mysongs",
     passport.authenticate("jwt", { session: false }),
     async (req, res) => {
-        console.log("Request headers:", req.headers); // Log request headers
-        console.log("Authenticated user:", req.user); // Log authenticated user
-
         try {
             const songs = await Song.find({ artist: req.user._id }).populate(
                 "artist"
@@ -114,11 +108,122 @@ router.get(
         try {
             const recentSongs = await Song.find()
                 .sort({ createdAt: -1 })
-                .limit(10)
+                .limit(12)
                 .populate("artist");
             return res.status(200).json({ data: recentSongs });
         } catch (error) {
             console.error("Error fetching recent songs:", error);
+            return res.status(500).json({ error: "Server error" });
+        }
+    }
+);
+
+router.post(
+    "/like/:songId",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        const { songId } = req.params;
+
+        if (!isValidObjectId(songId)) {
+            return res.status(400).json({ error: "Invalid Song ID format" });
+        }
+
+        try {
+            const song = await Song.findById(songId);
+            if (!song) {
+                return res.status(404).json({ error: "Song does not exist" });
+            }
+
+            const user = await User.findById(req.user._id);
+            if (!user) {
+                return res.status(404).json({ error: "User does not exist" });
+            }
+
+            if (!user.likedSongs.includes(songId)) {
+                user.likedSongs.push(songId);
+                await user.save();
+                return res
+                    .status(200)
+                    .json({ message: "Song liked successfully" });
+            } else {
+                return res.status(400).json({ error: "Song already liked" });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: "Server error" });
+        }
+    }
+);
+
+router.delete(
+    "/unlike/:songId",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        const { songId } = req.params;
+
+        if (!isValidObjectId(songId)) {
+            return res.status(400).json({ error: "Invalid Song ID format" });
+        }
+
+        try {
+            const user = await User.findById(req.user._id);
+            if (!user) {
+                return res.status(404).json({ error: "User does not exist" });
+            }
+
+            user.likedSongs = user.likedSongs.filter(
+                (id) => id.toString() !== songId
+            );
+            await user.save();
+            return res
+                .status(200)
+                .json({ message: "Song unliked successfully" });
+        } catch (error) {
+            return res.status(500).json({ error: "Server error" });
+        }
+    }
+);
+
+router.get(
+    "/liked",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        try {
+            const user = await User.findById(req.user._id).populate(
+                "likedSongs"
+            );
+            if (!user) {
+                return res.status(404).json({ error: "User does not exist" });
+            }
+
+            const likedSongs = await Song.find({
+                _id: { $in: user.likedSongs },
+            }).populate("artist");
+            return res.status(200).json({ data: likedSongs });
+        } catch (error) {
+            return res.status(500).json({ error: "Server error" });
+        }
+    }
+);
+
+router.get(
+    "/liked/:songId",
+    passport.authenticate("jwt", { session: false }),
+    async (req, res) => {
+        const { songId } = req.params;
+
+        if (!isValidObjectId(songId)) {
+            return res.status(400).json({ error: "Invalid Song ID format" });
+        }
+
+        try {
+            const user = await User.findById(req.user._id);
+            if (!user) {
+                return res.status(404).json({ error: "User does not exist" });
+            }
+
+            const isLiked = user.likedSongs.includes(songId);
+            return res.status(200).json({ liked: isLiked });
+        } catch (error) {
             return res.status(500).json({ error: "Server error" });
         }
     }

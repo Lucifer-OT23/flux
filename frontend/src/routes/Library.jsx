@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { makeAuthGETRequest } from "../utils/serverHelper";
-
-import LoggedIn from "../containers/LoggedIn";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Library = () => {
     const [myPlaylists, setMyPlaylists] = useState([]);
@@ -17,7 +15,7 @@ const Library = () => {
     }, []);
 
     return (
-        <LoggedIn currActiveScreen="library">
+        <div>
             <div className="text-white text-2xl font-semibold pt-8">
                 My Playlists
             </div>
@@ -35,7 +33,7 @@ const Library = () => {
                     );
                 })}
             </div>
-        </LoggedIn>
+        </div>
     );
 };
 
