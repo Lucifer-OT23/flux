@@ -144,7 +144,6 @@ const Player = ({ setAddToPlaylist }) => {
 
         const nextSong = songList[nextIndex];
         setCurrentSong(nextSong);
-        changeSound(nextSong.track);
     };
 
     const handlePrevious = () => {
@@ -164,7 +163,6 @@ const Player = ({ setAddToPlaylist }) => {
 
         const prevSong = songList[prevIndex];
         setCurrentSong(prevSong);
-        changeSound(prevSong.track);
     };
 
     const formatTime = (seconds) => {
@@ -198,21 +196,11 @@ const Player = ({ setAddToPlaylist }) => {
     };
 
     const handleShuffle = () => {
-        setIsShuffle((prevShuffle) => {
-            if (!prevShuffle) {
-                setIsRepeat(false);
-            }
-            return !prevShuffle;
-        });
+        setIsShuffle((prevShuffle) => !prevShuffle);
     };
 
     const handleRepeat = () => {
-        setIsRepeat((prevRepeat) => {
-            if (isShuffle) {
-                return false;
-            }
-            return !prevRepeat;
-        });
+        setIsRepeat((prevRepeat) => !prevRepeat);
     };
 
     const handleLike = async () => {
@@ -313,50 +301,47 @@ const Player = ({ setAddToPlaylist }) => {
                 </div>
             </div>
 
-            <div className="w-1/4 flex justify-end items-center pr-2">
+            <div className="w-1/4 flex justify-end items-center">
                 <button
                     onClick={() => setAddToPlaylist(true)}
                     className="p-2 mx-1 transition-all duration-300"
                 >
-                    <Icon icon="tabler:square-plus" width="24" height="24" />
+                    <Icon
+                        icon="ic:baseline-playlist-add"
+                        width="24"
+                        height="24"
+                    />
                 </button>
                 <button
                     onClick={handleLike}
                     className="p-2 mx-1 transition-all duration-300"
                 >
-                    <div className="relative w-6 h-6">
-                        <Icon
-                            icon={
-                                isLiked ? "tabler:heart-filled" : "tabler:heart"
-                            }
-                            width="24"
-                            height="24"
-                            className="transition-opacity duration-300"
-                        />
-                    </div>
-                </button>
-                <button
-                    onClick={handleShuffle}
-                    className="p-2 mx-1 transition-all duration-300"
-                >
                     <Icon
                         icon={`${
-                            isShuffle
-                                ? "material-symbols:shuffle-on"
-                                : "material-symbols:shuffle"
+                            isLiked
+                                ? "mdi:cards-heart"
+                                : "mdi:cards-heart-outline"
                         }`}
                         width="24"
                         height="24"
                     />
                 </button>
                 <button
+                    onClick={handleShuffle}
+                    className={`p-2 mx-1 ${
+                        isShuffle ? "text-[#00B8F6]" : ""
+                    } transition-all duration-300`}
+                >
+                    <Icon icon="mdi:shuffle" width="24" height="24" />
+                </button>
+                <button
                     onClick={handleRepeat}
-                    className="p-2 mx-1 transition-all duration-300"
+                    className={`p-2 mx-1 ${
+                        isRepeat ? "text-[#00B8F6]" : ""
+                    } transition-all duration-300`}
                 >
                     <Icon
-                        icon={`${
-                            isRepeat ? "tabler:repeat-once" : "tabler:repeat"
-                        }`}
+                        icon="material-symbols:repeat-rounded"
                         width="24"
                         height="24"
                     />
