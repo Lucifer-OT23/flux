@@ -1,5 +1,5 @@
-require("dotenv").config();
-
-export const backendUrl = process.env.BACKEND_URL;
-export const cloudinary_cloud_name = process.env.CLOUDINARY_CLOUD_NAME;
-export const cloudinary_upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET;
+export const backendUrl = import.meta.env.VITE_BACKEND_URL;
+export const cloudinary_upload_preset = import.meta.env
+    .VITE_CLOUDINARY_CLOUD_NAME;
+export const cloudinary_cloud_name = import.meta.env
+    .VITE_CLOUDINARY_UPLOAD_PRESET;
