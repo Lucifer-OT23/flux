@@ -4,7 +4,6 @@ import { useCookies } from "react-cookie";
 
 import Login from "./routes/Login";
 import SignUp from "./routes/SignUp";
-
 import HomeIn from "./routes/HomeIn";
 import UploadSong from "./routes/UploadSong";
 import MySongs from "./routes/MySongs";
@@ -19,13 +18,13 @@ function App() {
     const [soundPlayed, setSoundPlayed] = useState(null);
     const [isPaused, setIsPaused] = useState(true);
 
-    const [cookie, setCookie] = useCookies(["token"]);
+    const [cookie] = useCookies(["token"]);
 
     return (
         <div className="w-full h-full font-poppins">
             <BrowserRouter>
                 {cookie.token ? (
-                    //logged In Routes
+                    // Logged In Routes
                     <songContext.Provider
                         value={{
                             currentSong,
@@ -37,11 +36,12 @@ function App() {
                         }}
                     >
                         <Routes>
-                            <Route
-                                path="/"
-                                element={<LoggedIn currActiveScreen="home" />}
-                            >
-                                <Route path="home" element={<HomeIn />} />
+                            <Route path="/" element={<Navigate to="home" />} />
+                            <Route path="/" element={<LoggedIn />}>
+                                <Route
+                                    path="home"
+                                    element={<HomeIn currActiveScreen="home" />}
+                                />
                                 <Route
                                     path="uploadsong"
                                     element={
@@ -80,7 +80,7 @@ function App() {
                         </Routes>
                     </songContext.Provider>
                 ) : (
-                    //logged Out Routes
+                    // Logged Out Routes
                     <Routes>
                         <Route path="/login" element={<Login />} />
                         <Route path="/signup" element={<SignUp />} />
