@@ -1,6 +1,7 @@
 import {
     cloudinary_upload_preset,
     cloudinary_cloud_name,
+    cloudinary_key,
 } from "../../utils/config";
 import { openUploadWidget } from "../../utils/cloudinaryService";
 
@@ -10,6 +11,7 @@ const CloudinaryUpload = ({ setUrl, setName, buttonLabel }) => {
             {
                 cloudName: cloudinary_cloud_name,
                 uploadPreset: cloudinary_upload_preset,
+                apiKey: cloudinary_key,
                 sources: ["local"],
             },
             function (error, result) {
