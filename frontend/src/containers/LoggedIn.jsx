@@ -64,7 +64,7 @@ const LoggedIn = () => {
             <div
                 className={`${currentSong ? "h-[85%]" : "h-full"} w-full flex`}
             >
-                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-r-xl space-y-2 transition-all duration-300">
+                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-t-xl space-y-2 transition-all duration-300">
                     <div className="p-5 flex flex-col items-center justify-center">
                         <img src={flux} alt="logo" width="140" />
                     </div>

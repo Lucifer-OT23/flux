@@ -221,7 +221,7 @@ const Player = ({ setAddToPlaylist }) => {
     };
 
     return (
-        <div className="player w-full h-[15%] bg-opacity-30 text-white flex items-center px-2 transition-all duration-300">
+        <div className="player w-full h-[15%] bg-gradient-to-r from-[#0C0C26] to-[#1A1A3B] shadow-lg p-4 text-white flex items-center px-2 transition-all duration-300">
             <div className="w-1/4 flex items-center pl-2">
                 <img
                     src={currentSong.thumbnail}
@@ -293,7 +293,7 @@ const Player = ({ setAddToPlaylist }) => {
                                 setCurrentTime(e.target.value);
                             }
                         }}
-                        className="w-3/5 mx-2 thin-range-input"
+                        className="w-3/5 mx-2 thin-range-input h-1 bg-gradient-to-r from-[#00B8F6] to-[#34C8FF] rounded-full"
                     />
                     <div className="text-xs text-[#B0B0C0] w-1/5 font-medium">
                         {formatTime(duration)}
