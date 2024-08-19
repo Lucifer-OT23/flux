@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { makeUnauthPOSTRequest } from "../utils/serverHelper";
 import { useCookies } from "react-cookie";
@@ -11,9 +11,10 @@ const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
+    const [redirect, setRedirect] = useState(false);
 
     const [cookies, setCookie] = useCookies(["token"]);
-
     const navigate = useNavigate();
 
     const login = async () => {
@@ -25,20 +26,39 @@ const Login = () => {
             if (response && response.token) {
                 const token = response.token;
 
-                // Set token in cookies
                 const date = new Date();
                 date.setDate(date.getDate() + 1);
                 setCookie("token", token, { path: "/", expires: date });
 
-                navigate("/home");
+                setSuccess("Login successful!");
+                setError("");
+                setRedirect(true);
+            } else if (response && response.errors) {
+                setError(response.errors.map((err) => err.msg).join(", "));
+                setSuccess("");
+            } else if (response && response.error) {
+                setError(response.error);
+                setSuccess("");
             } else {
-                setError("Login failed. Please check your credentials.");
+                setError("Invalid credentials. Please try again.");
+                setSuccess("");
             }
         } catch (err) {
             console.error("Login error:", err);
-            setError("An error occurred. Please try again.");
+            setError("An unexpected error occurred. Please try again.");
+            setSuccess("");
         }
     };
+
+    useEffect(() => {
+        if (redirect) {
+            const timer = setTimeout(() => {
+                navigate("/home");
+            }, 3000);
+
+            return () => clearTimeout(timer);
+        }
+    }, [redirect, navigate]);
 
     return (
         <div className="bg-[#1A1A3B] w-full h-screen flex flex-col items-center justify-center p-6">
@@ -51,7 +71,10 @@ const Login = () => {
                 </p>
 
                 {error && (
-                    <div className="text-red-500 mb-4 text-sm">{error}</div> // Display error message
+                    <div className="text-red-500 mb-4 text-sm">{error}</div>
+                )}
+                {success && (
+                    <div className="text-green-500 mb-4 text-sm">{success}</div>
                 )}
 
                 <TextInput
@@ -87,10 +110,8 @@ const Login = () => {
                     Don't have an account?
                 </p>
 
-                <div className="border border-[#B0B0C0] text-white w-full flex items-center justify-center py-4 rounded-full font-bold mt-4 cursor-pointer hover:bg-[#2a86d3] transition-colors">
-                    <Link to="/signup" className="text-[#3C99DC]">
-                        Sign Up for Flux
-                    </Link>
+                <div className="border border-[#B0B0C0] text-[#3C99DC] w-full flex items-center justify-center py-4 rounded-full font-bold mt-4 cursor-pointer hover:bg-[#2a86d3] hover:text-white transition-colors">
+                    <Link to="/signup">Sign Up for Flux</Link>
                 </div>
             </div>
         </div>

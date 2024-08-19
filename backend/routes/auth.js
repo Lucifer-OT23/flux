@@ -12,7 +12,7 @@ router.post(
     [
         body("email").isEmail().withMessage("Invalid email format"),
         body("password")
-            .isLength({ min: 3 })
+            .isLength({ min: 6 })
             .withMessage("Password must be at least 6 characters long"),
         body("firstName").notEmpty().withMessage("First name is required"),
         body("username").notEmpty().withMessage("Username is required"),
@@ -113,6 +113,7 @@ router.get("/me", verifyToken, async (req, res) => {
 
 router.post("/logout", (req, res) => {
     res.cookie("token", "", { expires: new Date(0), httpOnly: true });
+    res.status(200).json({ message: "Logout successful" });
 });
 
 module.exports = router;

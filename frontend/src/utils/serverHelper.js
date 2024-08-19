@@ -15,7 +15,6 @@ export const makeUnauthPOSTRequest = async (route, body) => {
         return await response.json();
     } catch (error) {
         console.error("Error making unauthenticated POST request:", error);
-        throw error;
     }
 };
 
@@ -36,7 +35,6 @@ export const makeAuthPOSTRequest = async (route, body) => {
         return await response.json();
     } catch (error) {
         console.error("Error making authenticated POST request:", error);
-        throw error;
     }
 };
 
@@ -56,7 +54,6 @@ export const makeAuthGETRequest = async (route) => {
         return await response.json();
     } catch (error) {
         console.error("Error making authenticated GET request:", error);
-        throw error;
     }
 };
 
@@ -76,7 +73,6 @@ export const makeAuthDELETERequest = async (route) => {
         return await response.json();
     } catch (error) {
         console.error("Error making authenticated DELETE request:", error);
-        throw error;
     }
 };
 

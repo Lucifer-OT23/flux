@@ -14,13 +14,16 @@ const SignUp = () => {
     const [password, setPassword] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     const [cookie, setCookie] = useCookies(["token"]);
     const navigate = useNavigate();
 
     const signUp = async () => {
         if (email !== confirmEmail) {
-            alert("Email addresses do not match!");
+            setError("Email addresses do not match!");
+            setSuccess("");
             return;
         }
 
@@ -31,20 +34,34 @@ const SignUp = () => {
             firstName,
             lastName,
         };
-        console.log(data);
 
-        const response = await makeUnauthPOSTRequest("/auth/register", data);
-        if (response && !response.err) {
-            console.log(response);
-            const token = response.token;
+        try {
+            const response = await makeUnauthPOSTRequest(
+                "/auth/register",
+                data
+            );
+            if (response && !response.err) {
+                const token = response.token;
 
-            const date = new Date();
-            date.setDate(date.getDate() + 1);
+                const date = new Date();
+                date.setDate(date.getDate() + 1);
 
-            setCookie("token", token, { path: "/", expires: date });
-            navigate("/home");
-        } else {
-            alert("Sign up failed. Please try again.");
+                setCookie("token", token, { path: "/", expires: date });
+
+                setSuccess("Sign up successful! Redirecting...");
+                setError("");
+
+                setTimeout(() => {
+                    navigate("/home");
+                }, 1000);
+            } else {
+                setError("Sign up failed. Please try again.");
+                setSuccess("");
+            }
+        } catch (err) {
+            console.error("Sign up error:", err);
+            setError("An error occurred. Please try again.");
+            setSuccess("");
         }
     };
 
@@ -58,6 +75,13 @@ const SignUp = () => {
                 <div className="font-bold mb-6 text-2xl text-white text-center">
                     Sign up for free to start listening.
                 </div>
+
+                {error && (
+                    <div className="text-red-500 mb-4 text-sm">{error}</div>
+                )}
+                {success && (
+                    <div className="text-green-500 mb-4 text-sm">{success}</div>
+                )}
 
                 <TextInput
                     label="Email address"
@@ -125,10 +149,8 @@ const SignUp = () => {
                     Already have an account?
                 </p>
 
-                <div className="border border-[#B0B0C0] text-white w-full flex items-center justify-center py-4 rounded-full font-bold">
-                    <Link to="/login" className="text-[#3C99DC]">
-                        LOG IN INSTEAD
-                    </Link>
+                <div className="border border-[#B0B0C0] text-[#3C99DC] w-full flex items-center justify-center py-4 rounded-full font-bold mt-4 cursor-pointer hover:bg-[#2a86d3] hover:text-white transition-colors">
+                    <Link to="/login">LOG IN INSTEAD</Link>
                 </div>
             </div>
         </div>
