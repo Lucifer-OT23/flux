@@ -15,7 +15,7 @@ const Library = () => {
 
     return (
         <div className="p-8">
-            <div className="text-white text-2xl font-semibold pb-6">
+            <div className="text-2xl sm:text-3xl font-bold text-white pb-2">
                 Library
             </div>
 

@@ -24,7 +24,7 @@ const LikedSongs = () => {
 
     return (
         <div className="p-8">
-            <div className="text-white text-2xl font-semibold pb-4">
+            <div className="text-2xl sm:text-3xl font-bold text-white pb-4">
                 Liked Songs
             </div>
 

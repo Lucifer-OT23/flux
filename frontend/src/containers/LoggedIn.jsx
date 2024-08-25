@@ -21,6 +21,7 @@ const LoggedIn = () => {
 
     const { currentSong } = useContext(songContext);
     const currActiveScreen = location.pathname.split("/")[1] || "home";
+    console.log(currActiveScreen);
 
     useEffect(() => {
         const getUser = async () => {
@@ -44,6 +45,7 @@ const LoggedIn = () => {
                 "token" + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
             localStorage.clear();
             navigate("/login");
+            window.location.reload();
         } catch (error) {
             console.error("Logout failed:", error);
         }
@@ -64,7 +66,7 @@ const LoggedIn = () => {
             <div
                 className={`${currentSong ? "h-[85%]" : "h-full"} w-full flex`}
             >
-                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-t-xl space-y-2 transition-all duration-300">
+                <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-tr-xl space-y-2 transition-all duration-300">
                     <div className="p-5 flex flex-col items-center justify-center">
                         <img src={flux} alt="logo" width="140" />
                     </div>
@@ -115,25 +117,37 @@ const LoggedIn = () => {
                 </div>
 
                 <div className="h-full w-4/5 bg-[#1A1A3B] overflow-auto">
-                    <div className="navbar w-full h-1/10 bg-[#2D2D5E] bg-opacity-0 flex items-center justify-end transition-all duration-300">
-                        <div className="w-3/4 h-full flex items-center justify-around">
-                            <div className="w-full mx-2 h-full text-white flex items-center justify-end space-x-4">
-                                <button className="h-2/3 px-4 flex items-center justify-center rounded-full font-semibold text-[#B0B0C0] hover:text-white transition-colors duration-300">
+                    <div className="navbar w-full h-16 bg-[#2D2D5E] bg-opacity-0 flex items-center justify-end transition-all duration-300">
+                        <div className="w-3/4 m-4 h-full flex items-center">
+                            <div className="w-full h-full text-white flex items-center justify-end space-x-5">
+                                <button
+                                    className={`h-10 px-4 flex items-center rounded-full font-semibold ${
+                                        currActiveScreen === "support"
+                                            ? "text-white"
+                                            : "text-[#B0B0C0] hover:text-white"
+                                    } transition-colors duration-300`}
+                                >
                                     <Link to="/support">Support</Link>
                                 </button>
 
-                                <button className="h-2/3 px-4 flex items-center justify-center rounded-full font-semibold text-[#B0B0C0] hover:bg-[#1A1A3B] hover:text-white transition-colors duration-300">
+                                <button
+                                    className={`h-10 px-4 flex items-center rounded-full font-semibold ${
+                                        currActiveScreen === "uploadsong"
+                                            ? "text-white"
+                                            : "text-[#B0B0C0] hover:text-white"
+                                    } transition-colors duration-300`}
+                                >
                                     <Link to="/uploadsong">Upload Song</Link>
                                 </button>
 
-                                <div className="h-1/2 rounded-full border border-white"></div>
+                                <div className="h-10 rounded-full border border-white"></div>
 
                                 <button className="bg-[#3C99DC] h-2/3 w-1/6 flex items-center justify-center rounded-full font-semibold border border-white cursor-default hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300">
                                     {user ? user : "User"}
                                 </button>
 
                                 <button
-                                    className="bg-[#3C99DC] h-2/3 w-1/6 flex items-center justify-center rounded-full font-semibold border border-white hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
+                                    className="bg-[#3C99DC] h-10 w-1/6 flex items-center justify-center rounded-full font-semibold border border-white hover:bg-[#1A1A3B] hover:text-[#29B6F6] transition-colors duration-300"
                                     onClick={handleLogout}
                                 >
                                     Logout

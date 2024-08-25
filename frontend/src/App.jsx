@@ -12,6 +12,7 @@ import PlaylistView from "./routes/PlaylistView";
 import songContext from "./contexts/songContext";
 import LoggedIn from "./containers/LoggedIn";
 import LikedSongs from "./routes/LikedSongs";
+import Support from "./routes/Support";
 
 function App() {
     const [currentSong, setCurrentSong] = useState(null);
@@ -46,6 +47,12 @@ function App() {
                                     path="uploadsong"
                                     element={
                                         <UploadSong currActiveScreen="uploadsong" />
+                                    }
+                                />
+                                <Route
+                                    path="support"
+                                    element={
+                                        <Support currActiveScreen="support" />
                                     }
                                 />
                                 <Route

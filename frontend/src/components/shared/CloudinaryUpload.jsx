@@ -31,7 +31,7 @@ const CloudinaryUpload = ({ setUrl, setName, buttonLabel }) => {
 
     return (
         <button
-            className="bg-[#1A1A3B] max-w-[70%] border border-[#D0D0E0] text-[#FFFFFF] font-semibold py-2 px-6 rounded-xl hover:bg-[#00B8F6] transition-colors w-full"
+            className="bg-[#1A1A3B] border border-[#D0D0E0] text-[#FFFFFF] font-medium py-2 px-6 rounded-xl hover:bg-[#00B8F6] transition-colors w-full"
             onClick={uploadWidget}
         >
             {buttonLabel || "Upload File"}
