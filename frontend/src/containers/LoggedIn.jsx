@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { makeAuthGETRequest, makeAuthPOSTRequest } from "../utils/serverHelper";
 
-import flux from "../assets/flux-white.png";
+import flux from "../../public/flux2-white.svg";
 import IconText from "../components/shared/IconText";
 import songContext from "../contexts/songContext";
 import CreatePlaylist from "../models/CreatePlaylist";

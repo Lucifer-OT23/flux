@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { makeUnauthPOSTRequest } from "../utils/serverHelper";
 import { useCookies } from "react-cookie";
 
-import flux from "../assets/flux-white.png";
+import flux from "../../public/flux2-white.svg";
 import TextInput from "../components/shared/TextInput";
 import PassInput from "../components/shared/PassInput";
 

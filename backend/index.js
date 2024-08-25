@@ -13,7 +13,7 @@ const songRoutes = require("./routes/song");
 const playlistRoutes = require("./routes/playlist");
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 10000;
 
 app.use(cors());
 app.use(express.json());
