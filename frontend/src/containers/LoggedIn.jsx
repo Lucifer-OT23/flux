@@ -68,7 +68,12 @@ const LoggedIn = () => {
             >
                 <div className="h-full w-1/5 bg-[#2D2D5E] flex flex-col justify-start pb-10 rounded-tr-xl space-y-2 transition-all duration-300">
                     <div className="p-5 flex flex-col items-center justify-center">
-                        <img src={flux} alt="logo" width="140" />
+                        <img
+                            src={flux}
+                            alt="logo"
+                            width="140"
+                            onClick={() => navigate("/home")}
+                        />
                     </div>
 
                     <div className="py-5 space-y-2">
