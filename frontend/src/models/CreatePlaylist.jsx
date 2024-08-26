@@ -6,14 +6,14 @@ import CloudinaryUpload from "../components/shared/CloudinaryUpload";
 
 const CreatePlaylist = ({ close }) => {
     const [playlistName, setPlaylistName] = useState("");
-    const [playlistDesp, setPlaylistDesp] = useState("");
+    const [playlistDesc, setPlaylistDesc] = useState("");
     const [playlistThumbnail, setPlaylistThumbnail] = useState("");
 
     const createPlaylist = async () => {
         const response = await makeAuthPOSTRequest("/playlist/create", {
             name: playlistName,
             thumbnail: playlistThumbnail,
-            description: playlistDesp,
+            description: playlistDesc,
             songs: [],
         });
 
@@ -47,8 +47,8 @@ const CreatePlaylist = ({ close }) => {
                     <TextInput
                         label="Description"
                         placeholder="enter something about your playlist"
-                        value={playlistDesp}
-                        setValue={setPlaylistDesp}
+                        value={playlistDesc}
+                        setValue={setPlaylistDesc}
                         inputClassName="w-full"
                     />
 

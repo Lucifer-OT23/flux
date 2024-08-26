@@ -28,6 +28,7 @@ router.post(
                 name,
                 thumbnail,
                 songs,
+                description,
                 owner: currentUser._id,
                 collaborators: [],
             };
