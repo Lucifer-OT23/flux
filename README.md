@@ -1,15 +1,18 @@
 # Flux - A MERN Stack Music Streaming Application
+
 Flux is a full-featured music streaming application built using the MERN stack (MongoDB, Express.js, React.js, Node.js). It provides users with an intuitive interface to browse, play, and manage their music libraries, including the creation of playlists.
 
 ## Features
-- **Music Streaming:** Seamless playback with high-quality audio.
-- **Playlist Management:** Create, manage, and organize your playlists.
-- **User Authentication:** Secure login and registration using JWT.
-- **Responsive Design:** Optimized for different screen sizes.
-- **Cloudinary Integration:** Handles media uploads efficiently.
-- **Custom UI:** Built with Tailwind CSS for a vibrant and user-friendly interface.
+
+-   **Music Streaming:** Seamless playback with high-quality audio.
+-   **Playlist Management:** Create, manage, and organize your playlists.
+-   **User Authentication:** Secure login and registration using JWT.
+-   **Responsive Design:** Optimized for different screen sizes.
+-   **Cloudinary Integration:** Handles media uploads efficiently.
+-   **Custom UI:** Built with Tailwind CSS for a vibrant and user-friendly interface.
 
 ## Project Structure
+
 ```
 flux/
 │
@@ -46,9 +49,9 @@ flux/
 
 Make sure you have the following installed:
 
-- **Node.js:** [Install Node.js](https://nodejs.org/)
-- **npm:** Comes with Node.js. Alternatively, you can use [Yarn](https://yarnpkg.com/) as a package manager.
-- **MongoDB Atlas:** [Setup MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for the database.
+-   **Node.js:** [Install Node.js](https://nodejs.org/)
+-   **npm:** Comes with Node.js. Alternatively, you can use [Yarn](https://yarnpkg.com/) as a package manager.
+-   **MongoDB Atlas:** [Setup MongoDB Atlas](https://www.mongodb.com/cloud/atlas) for the database.
 
 ### Clone the Repository
 
@@ -61,70 +64,68 @@ cd flux
 
 1. Navigate to the `backend` directory:
 
-   ```bash
-   cd backend
-   ```
+    ```bash
+    cd backend
+    ```
 
 2. Install the dependencies:
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. Create a `.env` file in the `backend` directory with the following variables:
 
-   ```env
-   PORT=5000                 # Port for the backend server
-   DB=mongodb://...          # MongoDB connection string
-   KEY=your_secret_jwt_key   # JWT secret key
-   ```
+    ```env
+    PORT=5000                 # Port for the backend server
+    DB=mongodb://...          # MongoDB connection string
+    KEY=your_secret_jwt_key   # JWT secret key
+    ```
 
 4. Run the backend server:
 
-   ```bash
-   npm start
-   ```
+    ```bash
+    npm start
+    ```
 
-   The backend server will start on `http://localhost:5000`.
+    The backend server will start on `http://localhost:5000`.
 
 ### Frontend Setup
 
 1. Navigate to the `frontend` directory:
 
-   ```bash
-   cd ../frontend
-   ```
+    ```bash
+    cd ../frontend
+    ```
 
 2. Install the dependencies:
 
-   ```bash
-   npm install
-   ```
+    ```bash
+    npm install
+    ```
 
 3. Create a `.env` file in the `frontend` directory with the following variables:
 
-   ```env
-   VITE_BACKEND_URL=http://localhost:5000  # Backend server URL
-   VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-   VITE_CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload_preset
-   VITE_CLOUDINARY_KEY=your_cloudinary_api_key
-   ```
+    ```env
+    VITE_BACKEND_URL=http://localhost:5000  # Backend server URL
+    VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+    VITE_CLOUDINARY_UPLOAD_PRESET=your_cloudinary_upload_preset
+    VITE_CLOUDINARY_KEY=your_cloudinary_api_key
+    ```
 
 4. Run the frontend development server:
 
-   ```bash
-   npm run dev
-   ```
-
-   The frontend server will start on `http://localhost:3000`.
+    ```bash
+    npm run dev
+    ```
 
 ### Deployment
 
 Flux is configured to be deployed using:
 
-- **Frontend:** Vercel
-- **Backend:** Render
-- **Database:** MongoDB Atlas
+-   **Frontend:** Vercel
+-   **Backend:** Render
+-   **Database:** MongoDB Atlas
 
 ## Contributing
 
@@ -136,7 +137,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgements
 
-- Special thanks to everyone who contributed to this project.
-- Built using the MERN stack, Tailwind CSS, and Vite for optimal performance and scalability.
+-   Special thanks to everyone who contributed to this project.
+-   Built using the MERN stack, Tailwind CSS, and Vite for optimal performance and scalability.
 
 ---
